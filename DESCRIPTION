@@ -1,11 +1,11 @@
 Package: queue
 Type: Package
-Title: What the Package Does (Title Case)
-Depends: thor
+Title: Queue Data Type
+Imports: digest, thor
 Version: 0.1
 Author: Roger D. Peng <rdpeng@gmail.com>
 Maintainer: Roger D. Peng <rdpeng@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Implements a simple on-disk queue abstract data type using a key-value database backend.
 License: GPL-3
 Encoding: UTF-8
+RoxygenNote: 6.0.1
