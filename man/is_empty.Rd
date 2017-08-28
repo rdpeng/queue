@@ -4,10 +4,12 @@
 \alias{is_empty}
 \title{Check if Queue is Empty}
 \usage{
-is_empty(qdb)
+is_empty(x, ...)
 }
 \arguments{
-\item{qdb}{a queue object}
+\item{x}{a queue object}
+
+\item{...}{arguments passed to other methods}
 }
 \value{
 \code{TRUE} or \code{FALSE} depending on whether the queue is empty or not

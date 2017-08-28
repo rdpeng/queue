@@ -2,20 +2,22 @@
 % Please edit documentation in R/queue.R
 \name{enqueue}
 \alias{enqueue}
-\title{Push an Element}
+\title{Add an Element}
 \usage{
-enqueue(qdb, val)
+enqueue(x, val, ...)
 }
 \arguments{
-\item{qdb}{a queue object}
+\item{x}{a queue object}
 
 \item{val}{an R object}
+
+\item{...}{arguments passed to other methods}
 }
 \value{
 Nothing useful
 }
 \description{
-Push a new element on to the back of the queue
+Add a new element on to the back of the queue
 }
 \details{
 Insert an R object into the queue at the tail

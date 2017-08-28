@@ -4,10 +4,12 @@
 \alias{peek}
 \title{Get the next of the queue}
 \usage{
-peek(qdb)
+peek(x, ...)
 }
 \arguments{
-\item{qdb}{a queue object}
+\item{x}{a queue object}
+
+\item{...}{arguments passed to other methods}
 }
 \value{
 the value of the head of the queue

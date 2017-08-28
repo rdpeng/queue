@@ -22,7 +22,8 @@ create_Q <- function(qfile, ...) {
                 txn$abort()
                 stop(e)
         })
-        invisible(qdb)
+        invisible(structure(list(queue = qdb, path = qfile),
+                            class = "queue"))
 }
 
 
@@ -41,16 +42,23 @@ create_Q <- function(qfile, ...) {
 init_Q <- function(qfile, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
                        create = FALSE, ...)
-        qdb
+        structure(list(queue = qdb, path = qfile),
+                  class = "queue")
+}
+
+#' @export
+print.queue <- function(x, ...) {
+        cat(gettextf("<queue: %s>\n", basename(x$path)))
 }
 
 
-#' Push an Element
+#' Add an Element
 #'
-#' Push a new element on to the back of the queue
+#' Add a new element on to the back of the queue
 #'
-#' @param qdb a queue object
+#' @param x a queue object
 #' @param val an R object
+#' @param ... arguments passed to other methods
 #'
 #' @details Insert an R object into the queue at the tail
 #'
@@ -58,7 +66,13 @@ init_Q <- function(qfile, ...) {
 #'
 #' @export
 #'
-enqueue <- function(qdb, val) {
+enqueue <- function(x, val, ...) {
+        UseMethod("enqueue")
+}
+
+#' @export
+enqueue.queue <- function(x, val, ...) {
+        qdb <- x$queue
         node <- list(value = val,
                      nextkey = NULL)
         key <- hash(node)
@@ -84,11 +98,12 @@ enqueue <- function(qdb, val) {
         invisible(NULL)
 }
 
-#' Pop the Next Queue Element
+#' Get the Next Queue Element
 #'
 #' Return the next queue element and remove it from the queue
 #'
-#' @param qdb a queue object
+#' @param x a queue object
+#' @param ... arguments passed to other methods
 #'
 #' @details Return the head of the queue while also removing the element from the queue
 #'
@@ -96,7 +111,14 @@ enqueue <- function(qdb, val) {
 #'
 #' @export
 #'
-dequeue <- function(qdb) {
+dequeue <- function(x, ...) {
+        UseMethod("dequeue")
+}
+
+
+#' @export
+dequeue.queue <- function(x, ...) {
+        qdb <- x$queue
         txn <- qdb$begin(write = TRUE)
         tryCatch({
                 if(is_empty(txn))
@@ -119,28 +141,48 @@ dequeue <- function(qdb) {
 #'
 #' Check to see if the queue is empty
 #'
-#' @param qdb a queue object
+#' @param x a queue object
+#' @param ... arguments passed to other methods
 #'
 #' @return \code{TRUE} or \code{FALSE} depending on whether the queue is empty or not
 #'
 #' @export
 #'
-is_empty <- function(qdb) {
+is_empty <- function(x, ...) {
+        UseMethod("is_empty")
+}
+
+#' @export
+is_empty.queue <- function(x, ...) {
+        qdb <- x$queue
         val <- fetch(qdb, "head")
         is.null(val)
 }
+
+is_empty.mdb_txn <- function(x, ...) {
+        val <- fetch(x, "head")
+        is.null(val)
+}
+
 
 #' Get the next of the queue
 #'
 #' Return the next element of the queue
 #'
-#' @param qdb a queue object
+#' @param x a queue object
+#' @param ... arguments passed to other methods
 #'
 #' @return the value of the head of the queue
 #'
 #' @export
 #'
-peek <- function(qdb) {
+peek <- function(x, ...) {
+        UseMethod("peek")
+}
+
+#' @export
+peek.queue <- function(x, ...) {
+        qdb <- x$queue
         txn <- qdb$begin(write = FALSE)
         tryCatch({
                 key <- fetch(txn, "head")

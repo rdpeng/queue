@@ -2,12 +2,14 @@
 % Please edit documentation in R/queue.R
 \name{dequeue}
 \alias{dequeue}
-\title{Pop the Next Queue Element}
+\title{Get the Next Queue Element}
 \usage{
-dequeue(qdb)
+dequeue(x, ...)
 }
 \arguments{
-\item{qdb}{a queue object}
+\item{x}{a queue object}
+
+\item{...}{arguments passed to other methods}
 }
 \value{
 An R object representing the head of the queue
