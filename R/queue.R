@@ -55,7 +55,7 @@ init_queue <- function(qfile, ...) {
 
 #' @export
 print.queue <- function(x, ...) {
-        cat(gettextf("<queue: %s>\n", basename(x$path)))
+        cat(sprintf("<queue: %s>\n", basename(x$path)))
 }
 
 
