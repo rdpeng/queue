@@ -1,6 +1,6 @@
 Package: queue
 Type: Package
-Title: Queue Data Type
+Title: On-disk Queue Data Type
 Imports: digest, thor
 Version: 0.1
 Author: Roger D. Peng <rdpeng@gmail.com>
