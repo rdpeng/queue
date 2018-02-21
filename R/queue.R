@@ -5,12 +5,15 @@
 #' @param qfile the name of the queue
 #' @param ... other arguments to be passed to \code{mdb_env}
 #'
-#' @details The queue will be created as a subdirectory named \code{qfile} under the current working directory
+#' @details The queue will be created as a subdirectory named \code{qfile}
+#' under the current working directory
 #'
+#' @return an object of class \code{"queue"} (invisibly)
+#'fet
 #' @importFrom thor mdb_env
 #' @export
 
-create_Q <- function(qfile, ...) {
+create_queue <- function(qfile, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
                        create = TRUE, ...)
         txn <- qdb$begin(write = TRUE)
@@ -22,24 +25,28 @@ create_Q <- function(qfile, ...) {
                 txn$abort()
                 stop(e)
         })
-        invisible(structure(list(queue = qdb, path = qfile),
+        invisible(structure(list(queue = qdb,
+                                 path = qfile),
                             class = "queue"))
 }
 
 
 #' Initialize a queue
 #'
-#' Initialize an existing queue created by \code{createQ}
+#' Initialize an existing queue created by \code{create_queue}
 #'
 #' @param qfile the name of the queue
 #' @param ... other arguments to be passed to \code{mdb_env}
 #'
-#' @details \code{qfile} should be a subdirectory under the current working directory
+#' @details \code{qfile} should be a subdirectory under the current working
+#' directory
+#'
+#' @return an object of class \code{"queue"}
 #'
 #' @importFrom thor mdb_env
 #' @export
 
-init_Q <- function(qfile, ...) {
+init_queue <- function(qfile, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
                        create = FALSE, ...)
         structure(list(queue = qdb, path = qfile),
@@ -105,7 +112,8 @@ enqueue.queue <- function(x, val, ...) {
 #' @param x a queue object
 #' @param ... arguments passed to other methods
 #'
-#' @details Return the head of the queue while also removing the element from the queue
+#' @details Return the head of the queue while also removing the element from
+#' the queue
 #'
 #' @return An R object representing the head of the queue
 #'
@@ -144,7 +152,8 @@ dequeue.queue <- function(x, ...) {
 #' @param x a queue object
 #' @param ... arguments passed to other methods
 #'
-#' @return \code{TRUE} or \code{FALSE} depending on whether the queue is empty or not
+#' @return \code{TRUE} or \code{FALSE} depending on whether the queue is empty
+#' or not
 #'
 #' @export
 #'

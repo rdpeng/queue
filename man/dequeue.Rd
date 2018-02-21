@@ -18,5 +18,6 @@ An R object representing the head of the queue
 Return the next queue element and remove it from the queue
 }
 \details{
-Return the head of the queue while also removing the element from the queue
+Return the head of the queue while also removing the element from
+the queue
 }
