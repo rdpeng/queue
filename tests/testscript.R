@@ -2,17 +2,15 @@
 
 library(queue)
 dbname <- tempfile()
-create_queue(dbname)
-qdb <- init_queue(dbname)
+db <- create_queue(dbname)
+library(thor)
+db2 <- mdb_env(dbname)
+
+library(queue)
+dbname <- tempfile()
+qdb <- create_queue(dbname)
 is_empty(qdb)
 enqueue(qdb, 1)
-enqueue(qdb, 2)
-enqueue(qdb, 3)
-is_empty(qdb)
-peek(qdb)
-dequeue(qdb)
-peek(qdb)
-dequeue(qdb)
 
 library(thor)
 dbname <- tempfile()
@@ -23,7 +21,18 @@ txn$commit()
 e$list()
 unserialize(e$get("a"))
 
+enqueue(qdb, 2)
+enqueue(qdb, 3)
+is_empty(qdb)
+peek(qdb)
+dequeue(qdb)
+peek(qdb)
+dequeue(qdb)
+
 library(queue)
 dbname <- tempfile()
+print(dbname)
 qdb <- create_queue(dbname)
 enqueue(qdb, 1)
+
+

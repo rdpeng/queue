@@ -15,7 +15,7 @@ init_queue(qfile, ...)
 an object of class \code{"queue"}
 }
 \description{
-Initialize an existing queue created by \code{createQ}
+Initialize an existing queue created by \code{create_queue}
 }
 \details{
 \code{qfile} should be a subdirectory under the current working
