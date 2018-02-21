@@ -1,10 +1,9 @@
 ## Test queue
 
 library(queue)
-
 dbname <- tempfile()
-queue::create_Q(dbname)
-qdb <- init_Q(dbname)
+create_queue(dbname)
+qdb <- init_queue(dbname)
 is_empty(qdb)
 enqueue(qdb, 1)
 enqueue(qdb, 2)
@@ -14,3 +13,17 @@ peek(qdb)
 dequeue(qdb)
 peek(qdb)
 dequeue(qdb)
+
+library(thor)
+dbname <- tempfile()
+e <- mdb_env(dbname)
+txn <- e$begin(write = TRUE)
+queue:::insert(txn, "a", 1)
+txn$commit()
+e$list()
+unserialize(e$get("a"))
+
+library(queue)
+dbname <- tempfile()
+qdb <- create_queue(dbname)
+enqueue(qdb, 1)
