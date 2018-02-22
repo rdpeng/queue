@@ -4,10 +4,12 @@
 \alias{create_queue}
 \title{Create a queue}
 \usage{
-create_queue(qfile, ...)
+create_queue(qfile, mapsize = 2^30, ...)
 }
 \arguments{
 \item{qfile}{the name of the queue}
+
+\item{mapsize}{size of the map for LMDB database}
 
 \item{...}{other arguments to be passed to \code{mdb_env}}
 }

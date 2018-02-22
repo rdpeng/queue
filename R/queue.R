@@ -3,7 +3,9 @@
 #' Create a new queue along with necessary files
 #'
 #' @param qfile the name of the queue
+#' @param mapsize size of the map for LMDB database
 #' @param ... other arguments to be passed to \code{mdb_env}
+#'
 #'
 #' @details The queue will be created as a subdirectory named \code{qfile}
 #' under the current working directory
@@ -13,9 +15,9 @@
 #' @importFrom thor mdb_env
 #' @export
 
-create_queue <- function(qfile, ...) {
+create_queue <- function(qfile, mapsize = 2^30, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
-                       create = TRUE, mapsize = 2^30, ...)
+                       create = TRUE, mapsize = mapsize, ...)
         txn <- qdb$begin(write = TRUE)
         tryCatch({
                 insert(txn, "head", NULL)
@@ -36,6 +38,7 @@ create_queue <- function(qfile, ...) {
 #' Initialize an existing queue created by \code{create_queue}
 #'
 #' @param qfile the name of the queue
+#' @param mapsize size of the map for LMDB database
 #' @param ... other arguments to be passed to \code{mdb_env}
 #'
 #' @details \code{qfile} should be a subdirectory under the current working
@@ -46,9 +49,9 @@ create_queue <- function(qfile, ...) {
 #' @importFrom thor mdb_env
 #' @export
 
-init_queue <- function(qfile, ...) {
+init_queue <- function(qfile, mapsize = 2^30, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
-                       create = FALSE, mapsize = 2^30, ...)
+                       create = FALSE, mapsize = mapsize, ...)
         structure(list(queue = qdb, path = qfile),
                   class = "queue")
 }
