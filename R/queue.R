@@ -15,7 +15,7 @@
 
 create_queue <- function(qfile, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
-                       create = TRUE, ...)
+                       create = TRUE, mapsize = 2^30, ...)
         txn <- qdb$begin(write = TRUE)
         tryCatch({
                 insert(txn, "head", NULL)
@@ -48,7 +48,7 @@ create_queue <- function(qfile, ...) {
 
 init_queue <- function(qfile, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
-                       create = FALSE, ...)
+                       create = FALSE, mapsize = 2^30, ...)
         structure(list(queue = qdb, path = qfile),
                   class = "queue")
 }
@@ -79,6 +79,7 @@ enqueue <- function(x, val, ...) {
 
 #' @export
 enqueue.queue <- function(x, val, ...) {
+        force(val)
         qdb <- x$queue
         node <- list(value = val,
                      nextkey = NULL)
