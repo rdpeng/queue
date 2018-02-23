@@ -211,8 +211,30 @@ peek.queue <- function(x, ...) {
 }
 
 
+#' Extract Elements of  Queue
+#'
+#' Extract a Fixed Number of Elements of  Queue
+#'
+#' @param x a queue object
+#' @param ... arguments passed to other methods
+#'
+#' @return a list containing elements of the queue
+#' @export
+#'
+extract_n <- function(x, ...) {
+        UseMethod("extract_n")
+}
 
+#' @export
+extract_n.queue <- function(x, n = 1L, ...) {
+        results <- vector("list", length = n)
+        for(i in seq_len(n)) {
+                results[[i]] <- dequeue(x)
+        }
+        results
+}
 
+################################################################################
 ## Helper functions
 
 delete <- function(obj, key) {
