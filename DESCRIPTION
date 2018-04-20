@@ -4,7 +4,7 @@ Title: On-disk Queue Data Type
 Imports: digest, thor
 Suggests: testthat
 Version: 0.1
-Authors@R: person("Roger", "Peng", "D.", email = "rdpeng@gmail.com", role = c("aut", "cre"))
+Authors@R: person("Roger", "Peng", email = "rdpeng@gmail.com", role = c("aut", "cre"))
 Description: Implements a simple on-disk queue abstract data type using a key-value database backend.
 License: GPL-3
 Encoding: UTF-8
