@@ -9,3 +9,4 @@ Description: Implements a simple on-disk queue abstract data type using a key-va
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 6.0.1
+Remotes: richfitz/thor
