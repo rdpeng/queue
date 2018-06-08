@@ -80,12 +80,14 @@ enqueue <- function(x, val, ...) {
         UseMethod("enqueue")
 }
 
+#' @importFrom stats runif
 #' @export
 enqueue.queue <- function(x, val, ...) {
         force(val)
         qdb <- x$queue
         node <- list(value = val,
-                     nextkey = NULL)
+                     nextkey = NULL,
+                     salt = runif(1))
         key <- hash(node)
         txn <- qdb$begin(write = TRUE)
         tryCatch({

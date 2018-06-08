@@ -20,3 +20,16 @@ test_that("operations", {
         dequeue(qdb)
         expect_true(is_empty(qdb))
 })
+
+test_that("unique keys", {
+        dbname <- tempfile()
+        qdb <- create_queue(dbname)
+        expect_true(is_empty(qdb))
+        enqueue(qdb, 1)
+        enqueue(qdb, 2)
+        enqueue(qdb, 3)
+        enqueue(qdb, 1)
+        x <- dequeue(qdb)
+        expect_equal(x, 1)
+        expect_false(is_empty(qdb))
+})
