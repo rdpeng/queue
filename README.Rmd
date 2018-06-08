@@ -14,15 +14,15 @@ knitr::opts_chunk$set(
 
 # queue
 
-The goal of queue is to provide a simple on-disk queue in R.
+The goal of queue is to provide a simple on-disk queue data structure in R.
 
 ## Installation
 
 You can install queue from github with:
 
 ```{r gh-installation, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("rdpeng/queue")
+# install.packages("remotes")
+remotes::install_github("rdpeng/queue")
 ```
 
 ## Example
@@ -30,5 +30,21 @@ devtools::install_github("rdpeng/queue")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-## basic example code
+library(queue)
+x <- create_queue("myqueue")
+is_empty(x)
+
+## Queue up some items
+enqueue(x, 1)
+enqueue(x, 2)
+
+## Look at the head of the queue
+peek(x)
+
+## Retrieve some items
+dequeue(x)
+dequeue(x)
+
+is_empty(x)
+
 ```
