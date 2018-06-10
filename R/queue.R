@@ -179,12 +179,36 @@ de_enqueue.queue <- function(x, y, ...) {
         tryCatch({
                 if(is_empty(de_txn))
                         stop("source queue is empty")
+                h <- fetch(de_txn, "head")
+                node <- fetch(de_txn, h)
+                insert(de_txn, "head", node$nextkey)
+                delete(de_txn, h)
+                val <- node$value
+                node <- list(value = val,
+                             nextkey = NULL,
+                             salt = runif(1))
+                key <- hash(node)
 
+                if(is_empty(en_txn))
+                        insert(en_txn, "head", key)
+                else {
+                        ## Convert tail node to regular node
+                        tailkey <- fetch(en_txn, "tail")
+                        oldtail <- fetch(en_txn, tailkey)
+                        oldtail$nextkey <- key
+                        insert(en_txn, tailkey, oldtail)
+                }
+                ## Insert new node and point tail to new node
+                insert(en_txn, key, node)
+                insert(en_txn, "tail", key)
+                de_txn$commit()
+                en_txn$commit()
         }, error = function(e) {
                 de_txn$abort()
                 en_txn$abort()
                 stop(e)
         })
+        invisible(NULL)
 }
 
 
