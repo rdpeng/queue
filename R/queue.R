@@ -151,6 +151,43 @@ dequeue.queue <- function(x, ...) {
 
 }
 
+
+#' Dequeue and Enqueue
+#'
+#' Dequeue from one queue and add it to another queue
+#'
+#' Remove the next element of \code{x} and add it to the end of \code{y}
+#'
+#' @param x the source queue object
+#' @param y the target queue object
+#' @param ... arguments
+#'
+#' @export
+#'
+de_enqueue <- function(x, y, ...) {
+        UseMethod("de_enqueue")
+}
+
+
+de_enqueue.queue <- function(x, y, ...) {
+        if(!inherits(y, "queue"))
+                stop("both 'x' and 'y' must be 'queue' objects")
+        de_qdb <- x$queue
+        en_qdb <- y$queue
+        de_txn <- de_qdb$begin(write = TRUE)
+        en_txn <- en_qdb$begin(write = TRUE)
+        tryCatch({
+                if(is_empty(de_txn))
+                        stop("source queue is empty")
+
+        }, error = function(e) {
+                de_txn$abort()
+                en_txn$abort()
+                stop(e)
+        })
+}
+
+
 #' Check if Queue is Empty
 #'
 #' Check to see if the queue is empty
