@@ -152,65 +152,6 @@ dequeue.queue <- function(x, ...) {
 }
 
 
-#' Dequeue and Enqueue
-#'
-#' Dequeue from one queue and add it to another queue
-#'
-#' Remove the next element of \code{x} and add it to the end of \code{y}
-#'
-#' @param x the source queue object
-#' @param y the target queue object
-#' @param ... arguments
-#'
-#' @export
-#'
-de_enqueue <- function(x, y, ...) {
-        UseMethod("de_enqueue")
-}
-
-
-de_enqueue.queue <- function(x, y, ...) {
-        if(!inherits(y, "queue"))
-                stop("both 'x' and 'y' must be 'queue' objects")
-        de_qdb <- x$queue
-        en_qdb <- y$queue
-        de_txn <- de_qdb$begin(write = TRUE)
-        en_txn <- en_qdb$begin(write = TRUE)
-        tryCatch({
-                if(is_empty(de_txn))
-                        stop("source queue is empty")
-                h <- fetch(de_txn, "head")
-                node <- fetch(de_txn, h)
-                insert(de_txn, "head", node$nextkey)
-                delete(de_txn, h)
-                val <- node$value
-                node <- list(value = val,
-                             nextkey = NULL,
-                             salt = runif(1))
-                key <- hash(node)
-
-                if(is_empty(en_txn))
-                        insert(en_txn, "head", key)
-                else {
-                        ## Convert tail node to regular node
-                        tailkey <- fetch(en_txn, "tail")
-                        oldtail <- fetch(en_txn, tailkey)
-                        oldtail$nextkey <- key
-                        insert(en_txn, tailkey, oldtail)
-                }
-                ## Insert new node and point tail to new node
-                insert(en_txn, key, node)
-                insert(en_txn, "tail", key)
-                de_txn$commit()
-                en_txn$commit()
-        }, error = function(e) {
-                de_txn$abort()
-                en_txn$abort()
-                stop(e)
-        })
-        invisible(NULL)
-}
-
 
 #' Check if Queue is Empty
 #'
