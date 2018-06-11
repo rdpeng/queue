@@ -47,3 +47,38 @@ test_that("job_queue loop", {
         }
         unlink("test2_jobqueue", recursive = TRUE)
 })
+
+
+test_that("job_queue in a list", {
+        obj <- list(queue = create_job_queue("test3"))
+        x <- obj$queue
+        expect_equal(class(x), "job_queue")
+        enqueue(x, 1)
+        expect_equal(peek(x), 1)
+        k <- input2shelf(x)
+        shelf2output(x, k, "hello")
+        expect_equal(dequeue(x), "hello")
+        unlink("test3", recursive = TRUE)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
