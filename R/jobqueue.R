@@ -278,7 +278,22 @@ dequeue.job_queue <- function(x, ...) {
 }
 
 
-
+#' @export
+peek.job_queue <- function(x, ...) {
+        qdb <- x$queue
+        txn <- qdb$begin(write = FALSE)
+        tryCatch({
+                key <- fetch(txn, "in_head")
+                node <- fetch(txn, key)
+                val <- node$value
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                message("problem getting top value")
+                stop(e)
+        })
+        val
+}
 
 
 
