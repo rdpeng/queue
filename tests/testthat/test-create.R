@@ -33,3 +33,10 @@ test_that("unique keys", {
         expect_equal(x, 1)
         expect_false(is_empty(qdb))
 })
+
+
+test_that("peek", {
+        x <- create_queue("peek_test")
+        expect_error(peek(x))
+        unlink("peek_test", recursive = TRUE)
+})
