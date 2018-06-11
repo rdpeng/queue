@@ -312,8 +312,8 @@ delete_queue.job_queue <- function(x, ...) {
 #' @param x a job_queue object
 #' @param ... arguments passed to other methods
 #'
-#' @return \code{TRUE} or \code{FALSE} depending on whether the input queue is empty
-#' or not
+#' @return \code{TRUE} or \code{FALSE} depending on whether the input queue
+#' is empty or not
 #'
 #' @export
 #'
@@ -341,8 +341,8 @@ is_empty_input.mdb_txn <- function(x, ...) {
 #' @param x a job_queue object
 #' @param ... arguments passed to other methods
 #'
-#' @return \code{TRUE} or \code{FALSE} depending on whether the output queue is empty
-#' or not
+#' @return \code{TRUE} or \code{FALSE} depending on whether the output queue
+#' is empty or not
 #'
 #' @export
 #'

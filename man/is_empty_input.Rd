@@ -12,8 +12,8 @@ is_empty_input(x, ...)
 \item{...}{arguments passed to other methods}
 }
 \value{
-\code{TRUE} or \code{FALSE} depending on whether the input queue is empty
-or not
+\code{TRUE} or \code{FALSE} depending on whether the input queue
+is empty or not
 }
 \description{
 Check to see if the input queue is empty

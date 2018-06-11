@@ -12,8 +12,8 @@ is_empty_output(x, ...)
 \item{...}{arguments passed to other methods}
 }
 \value{
-\code{TRUE} or \code{FALSE} depending on whether the output queue is empty
-or not
+\code{TRUE} or \code{FALSE} depending on whether the output queue
+is empty or not
 }
 \description{
 Check to see if the output queue is empty
