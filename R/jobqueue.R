@@ -386,6 +386,62 @@ any_shelf.job_queue <- function(x, ...) {
 
 
 
+#' Move from Shelf to Input Queue
+#'
+#' Move all objects from the shelf to the input queue
+#'
+#' @param x a job_queue object
+#' @param ... other arguments passed to methods
+#'
+#' @export
+#'
+shelf2input <- function(x, ...) {
+        UseMethod("shelf2input")
+}
+
+
+#' @export
+shelf2input.job_queue <- function(x, ...) {
+        qdb <- x$queue
+        txn <- qdb$begin(write = TRUE)
+        tryCatch({
+                keys <- txn$list(starts_with = "shelf_")
+
+                if(!length(keys))
+                        stop("there are no items on the shelf")
+
+                for(skey in keys) {
+                        val <- fetch(txn, skey)
+
+                        ## Delete from shelf
+                        delete(txn, skey)
+
+                        ## Add val to input queue
+                        node <- list(value = val,
+                                     nextkey = NULL,
+                                     salt = runif(1))
+                        key <- hash(node)
+
+                        if(is_empty_input(txn))
+                                insert(txn, "in_head", key)
+                        else {
+                                ## Convert tail node to regular node
+                                tailkey <- fetch(txn, "in_tail")
+                                oldtail <- fetch(txn, tailkey)
+                                oldtail$nextkey <- key
+                                insert(txn, tailkey, oldtail)
+                        }
+                        ## Insert new node and point tail to new node
+                        insert(txn, key, node)
+                        insert(txn, "in_tail", key)
+                }
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                stop(e)
+        })
+        invisible(NULL)
+}
 
 
 

@@ -27,7 +27,7 @@ test_that("job_queue", {
         val <- dequeue(x)
         expect_equal(val, result)
         expect_true(is_empty_output(x))
-        unlink("test_jobqueue", recursive = TRUE)
+        delete_queue(x)
 })
 
 test_that("job_queue loop", {
@@ -48,7 +48,7 @@ test_that("job_queue loop", {
         for(i in 1:n) {
                 output[i] <- dequeue(x)
         }
-        unlink("test2_jobqueue", recursive = TRUE)
+        delete_queue(x)
 })
 
 
@@ -61,11 +61,26 @@ test_that("job_queue in a list", {
         k <- input2shelf(x)
         shelf2output(x, k$key, "hello")
         expect_equal(dequeue(x), "hello")
-        unlink("test3", recursive = TRUE)
+        delete_queue(x)
 })
 
 
-
+test_that("shelf2input", {
+        x <- create_job_queue("test4")
+        enqueue(x, 1)
+        enqueue(x, 2)
+        input2shelf(x)
+        input2shelf(x)
+        expect_true(any_shelf(x))
+        shelf2input(x)
+        expect_false(is_empty_input(x))
+        peek(x)
+        input2shelf(x)
+        input2shelf(x)
+        expect_true(is_empty_input(x))
+        expect_true(is_empty_output(x))
+        delete_queue(x)
+})
 
 
 
