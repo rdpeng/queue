@@ -148,7 +148,6 @@ dequeue.queue <- function(x, ...) {
                 stop(e)
         })
         val
-
 }
 
 
