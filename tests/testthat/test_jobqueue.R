@@ -8,18 +8,21 @@ test_that("job_queue", {
         expect_true(is_empty_output(x))
         expect_error(dequeue(x))
         k <- input2shelf(x)
-        expect_true(is.character(k))
-        expect_equal(substr(k, 1, 6), "shelf_")
+        expect_true(any_shelf(x))
+        expect_true(is.character(k$key))
+        expect_equal(substr(k$key, 1, 6), "shelf_")
         expect_error(dequeue(x))
         result <- "Result"
-        shelf2output(x, k, result)
+        shelf2output(x, k$key, result)
         expect_false(is_empty_output(x))
         val <- dequeue(x)
         expect_equal(val, result)
         expect_true(is_empty_output(x))
         k <- input2shelf(x)
+        expect_true(any_shelf(x))
         expect_true(is_empty_input(x))
-        shelf2output(x, k, result)
+        shelf2output(x, k$key, result)
+        expect_false(any_shelf(x))
         expect_equal(length(shelf_list(x)), 0L)
         val <- dequeue(x)
         expect_equal(val, result)
@@ -35,7 +38,7 @@ test_that("job_queue loop", {
         }
         keys <- integer(n)
         for(i in 1:n) {
-                keys[i] <- input2shelf(x)
+                keys[i] <- input2shelf(x)$key
         }
         for(i in 1:n) {
                 result <- runif(1)
@@ -56,7 +59,7 @@ test_that("job_queue in a list", {
         enqueue(x, 1)
         expect_equal(peek(x), 1)
         k <- input2shelf(x)
-        shelf2output(x, k, "hello")
+        shelf2output(x, k$key, "hello")
         expect_equal(dequeue(x), "hello")
         unlink("test3", recursive = TRUE)
 })
