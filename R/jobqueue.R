@@ -156,7 +156,8 @@ shelf_get.job_queue <- function(x, key, ...) {
         qdb <- x$queue
         txn <- qdb$begin(write = FALSE)
         tryCatch({
-                val <- fetch(txn, key)
+                node <- fetch(txn, key)
+                val <- node$value
                 txn$commit()
         }, error = function(e) {
                 txn$abort()
