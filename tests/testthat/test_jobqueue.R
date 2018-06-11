@@ -29,7 +29,7 @@ test_that("job_queue", {
 
 test_that("job_queue loop", {
         x <- create_job_queue("test2_jobqueue")
-        n <- 100
+        n <- 200
         for(i in 1:n) {
                 enqueue(x, i)
         }
@@ -45,4 +45,5 @@ test_that("job_queue loop", {
         for(i in 1:n) {
                 output[i] <- dequeue(x)
         }
+        unlink("test2_jobqueue", recursive = TRUE)
 })
