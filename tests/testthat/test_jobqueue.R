@@ -26,3 +26,23 @@ test_that("job_queue", {
         expect_true(is_empty_output(x))
         unlink("test_jobqueue", recursive = TRUE)
 })
+
+test_that("job_queue loop", {
+        x <- create_job_queue("test2_jobqueue")
+        n <- 100
+        for(i in 1:n) {
+                enqueue(x, i)
+        }
+        keys <- integer(n)
+        for(i in 1:n) {
+                keys[i] <- input2shelf(x)
+        }
+        for(i in 1:n) {
+                result <- runif(1)
+                shelf2output(x, keys[i], result)
+        }
+        output <- numeric(n)
+        for(i in 1:n) {
+                output[i] <- dequeue(x)
+        }
+})
