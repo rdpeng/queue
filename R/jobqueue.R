@@ -300,7 +300,10 @@ peek.job_queue <- function(x, ...) {
         val
 }
 
-
+#' @export
+delete_queue.job_queue <- function(x, ...) {
+        x$queue$destroy()
+}
 
 #' Check if Input Queue is Empty
 #'

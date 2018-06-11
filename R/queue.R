@@ -213,6 +213,23 @@ peek.queue <- function(x, ...) {
         val
 }
 
+#' Delete a Queue
+#'
+#' Delete a Queue
+#'
+#' @param x a queue object
+#' @param ... other options passed to methods
+#' @export
+delete_queue <- function(x, ...) {
+        UseMethod("delete_queue")
+}
+
+#' @export
+delete_queue.queue <- function(x, ...) {
+        x$queue$destroy()
+}
+
+
 ################################################################################
 ## Helper functions
 
