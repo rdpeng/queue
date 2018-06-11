@@ -100,7 +100,6 @@ enqueue.job_queue <- function(x, val, ...) {
                 stop(e)
         })
         invisible(NULL)
-
 }
 
 
@@ -126,6 +125,7 @@ shelf_list.job_queue <- function(x, ...) {
         txn <- qdb$begin(write = FALSE)
         tryCatch({
                 keys <- txn$list(starts_with = "shelf_")
+
                 if(length(keys) > 0L)
                         vals <- mfetch(txn, keys)
                 else
@@ -208,7 +208,7 @@ input2shelf.job_queue <- function(x, ...) {
                 txn$abort()
                 stop(e)
         })
-        key
+        list(key = key, value = val)
 }
 
 #' Move from Shelf to Output Queue
@@ -364,6 +364,24 @@ is_empty_output.mdb_txn <- function(x, ...) {
 
 
 
+#' Check Shelf for Objects
+#'
+#' Are there any objects on the shelf?
+#'
+#' @param x a job_queue object
+#' @param ... arguments passed to methods
+#'
+#' @export
+#'
+any_shelf <- function(x, ...) {
+        UseMethod("any_shelf")
+}
+
+#' @export
+any_shelf.job_queue <- function(x, ...) {
+        keys <- x$queue$list(starts_with = "shelf_")
+        length(keys) > 0L
+}
 
 
 
