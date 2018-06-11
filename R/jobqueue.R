@@ -205,7 +205,7 @@ input2shelf.job_queue <- function(x, ...) {
                 insert(txn, key, shelf_node)
                 txn$commit()
         }, error = function(e) {
-                qdb$abort()
+                txn$abort()
                 stop(e)
         })
         key
