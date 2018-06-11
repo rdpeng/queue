@@ -72,6 +72,71 @@ print.job_queue <- function(x, ...) {
 }
 
 
+#' @export
+enqueue.job_queue <- function(x, val, ...) {
+
+}
+
+#' Move from Input to Shelf
+#'
+#' Dequeue the input queue and move that element to the shelf
+#'
+#' @param x a job_queue object
+#'
+#' @export
+#'
+input2shelf <- function(x, ...) {
+        UseMethod("dequeue2shelf")
+}
+
+
+#' @export
+input2shelf.job_queue <- function(x, ...) {
+
+}
+
+#' Move from Shelf to Output Queue
+#'
+#' Move an object from the shelf to the output queue
+#'
+#' @param x a job_queue object
+#' @param key identifier for shelf object
+#'
+#' @export
+#'
+shelf2output <- function(x, key, ...) {
+
+}
+
+
+#' @export
+shelf2output.job_queue <- function(x, key, ...) {
+
+}
+
+
+#' @export
+dequeue.job_queue <- function(x, ...) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
