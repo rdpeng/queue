@@ -8,6 +8,8 @@ shelf_list(x, ...)
 }
 \arguments{
 \item{x}{a job_queue object}
+
+\item{...}{other arguments passed to methods}
 }
 \value{
 a named list of elements on the shelf

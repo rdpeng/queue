@@ -8,6 +8,8 @@ input2shelf(x, ...)
 }
 \arguments{
 \item{x}{a job_queue object}
+
+\item{...}{other arguments passed to methods}
 }
 \description{
 Dequeue the input queue and move that element to the shelf

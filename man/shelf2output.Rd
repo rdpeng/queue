@@ -12,6 +12,8 @@ shelf2output(x, key, val, ...)
 \item{key}{identifier for shelf object}
 
 \item{val}{an R object to be put in the output queue}
+
+\item{...}{other arguments passed to methods}
 }
 \description{
 Move an object from the shelf to the output queue

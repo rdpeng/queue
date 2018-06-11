@@ -10,6 +10,8 @@ shelf_get(x, key, ...)
 \item{x}{a job_queue object}
 
 \item{key}{a shelf identifier key}
+
+\item{...}{other arguments passed to methods}
 }
 \description{
 Retrieve an element from the shelf given a key

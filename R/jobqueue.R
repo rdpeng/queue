@@ -109,6 +109,7 @@ enqueue.job_queue <- function(x, val, ...) {
 #' List elements on the shelf
 #'
 #' @param x a job_queue object
+#' @param ... other arguments passed to methods
 #'
 #' @return a named list of elements on the shelf
 #'
@@ -144,6 +145,7 @@ shelf_list.job_queue <- function(x, ...) {
 #'
 #' @param x a job_queue object
 #' @param key a shelf identifier key
+#' @param ... other arguments passed to methods
 #'
 #' @export
 #'
@@ -172,6 +174,7 @@ shelf_get.job_queue <- function(x, key, ...) {
 #' Dequeue the input queue and move that element to the shelf
 #'
 #' @param x a job_queue object
+#' @param ... other arguments passed to methods
 #'
 #' @export
 #'
@@ -215,6 +218,7 @@ input2shelf.job_queue <- function(x, ...) {
 #' @param x a job_queue object
 #' @param key identifier for shelf object
 #' @param val an R object to be put in the output queue
+#' @param ... other arguments passed to methods
 #'
 #' @export
 #'
