@@ -74,8 +74,97 @@ print.job_queue <- function(x, ...) {
 
 #' @export
 enqueue.job_queue <- function(x, val, ...) {
+        force(val)
+        qdb <- x$queue
+        node <- list(value = val,
+                     nextkey = NULL,
+                     salt = runif(1))
+        key <- hash(node)
+        txn <- qdb$begin(write = TRUE)
+        tryCatch({
+                if(is_empty_input(txn))
+                        insert(txn, "in_head", key)
+                else {
+                        ## Convert tail node to regular node
+                        tailkey <- fetch(txn, "in_tail")
+                        oldtail <- fetch(txn, tailkey)
+                        oldtail$nextkey <- key
+                        insert(txn, tailkey, oldtail)
+                }
+                ## Insert new node and point tail to new node
+                insert(txn, key, node)
+                insert(txn, "in_tail", key)
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                stop(e)
+        })
+        invisible(NULL)
 
 }
+
+
+#' List elements on the shelf
+#'
+#' List elements on the shelf
+#'
+#' @param x a job_queue object
+#'
+#' @return a named list of elements on the shelf
+#'
+#' @export
+#'
+shelf_list <- function(x, ...) {
+        UseMethod("shelf_list")
+}
+
+
+#' @export
+shelf_list.job_queue <- function(x, ...) {
+        qdb <- x$queue
+        txn <- qdb$begin(write = FALSE)
+        tryCatch({
+                keys <- txn$list(starts_with = "shelf_")
+                if(length(keys) > 0L)
+                        vals <- mfetch(txn, keys)
+                else
+                        vals <- list()
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                stop(e)
+        })
+        vals
+}
+
+
+#' Retrieve an element from the shelf
+#'
+#' Retrieve an element from the shelf given a key
+#'
+#' @param x a job_queue object
+#' @param key a shelf identifier key
+#'
+#' @export
+#'
+shelf_get <- function(x, key, ...) {
+        UseMethod("shelf_get")
+}
+
+#' @export
+shelf_get.job_queue <- function(x, key, ...) {
+        qdb <- x$queue
+        txn <- qdb$begin(write = FALSE)
+        tryCatch({
+                val <- fetch(txn, key)
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                stop(e)
+        })
+        val
+}
+
 
 #' Move from Input to Shelf
 #'
@@ -86,13 +175,36 @@ enqueue.job_queue <- function(x, val, ...) {
 #' @export
 #'
 input2shelf <- function(x, ...) {
-        UseMethod("dequeue2shelf")
+        UseMethod("input2shelf")
 }
 
 
 #' @export
 input2shelf.job_queue <- function(x, ...) {
+        qdb <- x$queue
+        txn <- qdb$begin(write = TRUE)
+        tryCatch({
+                ## Dequeue the input queue
+                if(is_empty_input(txn))
+                        stop("input queue is empty")
+                h <- fetch(txn, "in_head")
+                node <- fetch(txn, h)
+                insert(txn, "in_head", node$nextkey)
+                delete(txn, h)
+                val <- node$value
 
+                ## Insert into the shelf
+                shelf_node <- list(value = val,
+                                   salt = runif(1))
+                ## Special shelf identifier prefix
+                key <- paste0("shelf_", hash(shelf_node))
+                insert(txn, key, shelf_node)
+                txn$commit()
+        }, error = function(e) {
+                qdb$abort()
+                stop(e)
+        })
+        key
 }
 
 #' Move from Shelf to Output Queue
@@ -101,23 +213,68 @@ input2shelf.job_queue <- function(x, ...) {
 #'
 #' @param x a job_queue object
 #' @param key identifier for shelf object
+#' @param val an R object to be put in the output queue
 #'
 #' @export
 #'
-shelf2output <- function(x, key, ...) {
-
+shelf2output <- function(x, key, val, ...) {
+        UseMethod("shelf2output")
 }
 
 
 #' @export
-shelf2output.job_queue <- function(x, key, ...) {
+shelf2output.job_queue <- function(x, key, val, ...) {
+        qdb <- x$queue
+        txn <- qdb$begin(write = TRUE)
+        tryCatch({
+                ## Delete from shelf
+                delete(txn, key)
 
+                ## Add val to output queue
+                node <- list(value = val,
+                             nextkey = NULL,
+                             salt = runif(1))
+                key <- hash(node)
+
+                if(is_empty_output(txn))
+                        insert(txn, "out_head", key)
+                else {
+                        ## Convert tail node to regular node
+                        tailkey <- fetch(txn, "out_tail")
+                        oldtail <- fetch(txn, tailkey)
+                        oldtail$nextkey <- key
+                        insert(txn, tailkey, oldtail)
+                }
+                ## Insert new node and point tail to new node
+                insert(txn, key, node)
+                insert(txn, "out_tail", key)
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                stop(e)
+        })
+        invisible(NULL)
 }
 
 
 #' @export
 dequeue.job_queue <- function(x, ...) {
-
+        qdb <- x$queue
+        txn <- qdb$begin(write = TRUE)
+        tryCatch({
+                if(is_empty_output(txn))
+                        stop("output queue is empty")
+                h <- fetch(txn, "out_head")
+                node <- fetch(txn, h)
+                insert(txn, "out_head", node$nextkey)
+                delete(txn, h)
+                val <- node$value
+                txn$commit()
+        }, error = function(e) {
+                txn$abort()
+                stop(e)
+        })
+        val
 }
 
 
@@ -125,8 +282,62 @@ dequeue.job_queue <- function(x, ...) {
 
 
 
+#' Check if Input Queue is Empty
+#'
+#' Check to see if the input queue is empty
+#'
+#' @param x a job_queue object
+#' @param ... arguments passed to other methods
+#'
+#' @return \code{TRUE} or \code{FALSE} depending on whether the input queue is empty
+#' or not
+#'
+#' @export
+#'
+is_empty_input <- function(x, ...) {
+        UseMethod("is_empty_input")
+}
+
+#' @export
+is_empty_input.job_queue <- function(x, ...) {
+        qdb <- x$queue
+        val <- fetch(qdb, "in_head")
+        is.null(val)
+}
+
+is_empty_input.mdb_txn <- function(x, ...) {
+        val <- fetch(x, "in_head")
+        is.null(val)
+}
 
 
+#' Check if Output Queue is Empty
+#'
+#' Check to see if the output queue is empty
+#'
+#' @param x a job_queue object
+#' @param ... arguments passed to other methods
+#'
+#' @return \code{TRUE} or \code{FALSE} depending on whether the output queue is empty
+#' or not
+#'
+#' @export
+#'
+is_empty_output <- function(x, ...) {
+        UseMethod("is_empty_output")
+}
+
+#' @export
+is_empty_output.job_queue <- function(x, ...) {
+        qdb <- x$queue
+        val <- fetch(qdb, "out_head")
+        is.null(val)
+}
+
+is_empty_output.mdb_txn <- function(x, ...) {
+        val <- fetch(x, "out_head")
+        is.null(val)
+}
 
 
 

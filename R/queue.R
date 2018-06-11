@@ -226,8 +226,15 @@ insert <- function(obj, key, value) {
 }
 
 fetch <- function(obj, key) {
-        value_raw <- obj$get(key)
+        value_raw <- obj$get(key, as_raw = TRUE)
         unserialize(value_raw)
+}
+
+mfetch <- function(obj, key) {
+        values_raw <- obj$mget(key, as_raw = TRUE)
+        r <- lapply(values_raw, unserialize)
+        names(r) <- key
+        r
 }
 
 #' @importFrom digest sha1
