@@ -34,12 +34,14 @@ test_that("job_queue loop", {
         x <- list(jq = create_job_queue("test2_jobqueue"))
         n <- 200
         for(i in 1:n) {
-                enqueue(x$jq, i)
+                jq <- x$jq
+                enqueue(jq, i)
         }
         for(i in 1:n) {
-                k <- input2shelf(x$jq)
+                jq <- x$jq
+                k <- input2shelf(jq)
                 result <- runif(1)
-                shelf2output(x$jq, k$key, result)
+                shelf2output(jq, k$key, result)
         }
         delete_queue(x$jq)
 })
