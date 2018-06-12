@@ -391,8 +391,7 @@ shelf2input <- function(x, ...) {
 #' @export
 shelf2input.job_queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 keys <- txn$list(starts_with = "shelf_")
 
                 if(!length(keys))
@@ -405,7 +404,7 @@ shelf2input.job_queue <- function(x, ...) {
                         delete(txn, skey)
 
                         ## Add val to input queue
-                        node <- list(value = val,
+                        node <- list(value = val$value,
                                      nextkey = NULL,
                                      salt = runif(1))
                         key <- hash(node)
@@ -423,11 +422,8 @@ shelf2input.job_queue <- function(x, ...) {
                         insert(txn, key, node)
                         insert(txn, "in_tail", key)
                 }
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
         invisible(NULL)
 }
 
