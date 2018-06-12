@@ -80,8 +80,7 @@ enqueue.job_queue <- function(x, val, ...) {
                      nextkey = NULL,
                      salt = runif(1))
         key <- hash(node)
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 if(is_empty_input(txn))
                         insert(txn, "in_head", key)
                 else {
@@ -94,11 +93,8 @@ enqueue.job_queue <- function(x, val, ...) {
                 ## Insert new node and point tail to new node
                 insert(txn, key, node)
                 insert(txn, "in_tail", key)
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
         invisible(NULL)
 }
 
@@ -182,12 +178,10 @@ input2shelf <- function(x, ...) {
         UseMethod("input2shelf")
 }
 
-
 #' @export
 input2shelf.job_queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 ## Dequeue the input queue
                 if(is_empty_input(txn))
                         stop("input queue is empty")
@@ -200,16 +194,15 @@ input2shelf.job_queue <- function(x, ...) {
                 ## Insert into the shelf
                 shelf_node <- list(value = val,
                                    salt = runif(1))
+
                 ## Special shelf identifier prefix
                 key <- paste0("shelf_", hash(shelf_node))
                 insert(txn, key, shelf_node)
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
-        list(key = key, value = val)
+                list(key = key, value = val)
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
 }
+
 
 #' Move from Shelf to Output Queue
 #'
@@ -226,12 +219,10 @@ shelf2output <- function(x, key, val, ...) {
         UseMethod("shelf2output")
 }
 
-
 #' @export
 shelf2output.job_queue <- function(x, key, val, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 ## Delete from shelf
                 delete(txn, key)
 
@@ -253,11 +244,8 @@ shelf2output.job_queue <- function(x, key, val, ...) {
                 ## Insert new node and point tail to new node
                 insert(txn, key, node)
                 insert(txn, "out_tail", key)
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
         invisible(NULL)
 }
 
