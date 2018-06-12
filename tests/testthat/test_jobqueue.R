@@ -67,17 +67,21 @@ test_that("job_queue in a list", {
 
 test_that("shelf2input", {
         x <- create_job_queue("test4")
-        enqueue(x, 1)
-        enqueue(x, 2)
-        input2shelf(x)
-        input2shelf(x)
+        n <- 200
+        for(i in 1:n) {
+                enqueue(x, i)
+        }
+        for(i in 1:n) {
+                input2shelf(x)
+        }
+        expect_true(is_empty_input(x))
         expect_true(any_shelf(x))
         shelf2input(x)
         expect_false(is_empty_input(x))
         peek(x)
         input2shelf(x)
         input2shelf(x)
-        expect_true(is_empty_input(x))
+        expect_false(is_empty_input(x))
         expect_true(is_empty_output(x))
         delete_queue(x)
 })
