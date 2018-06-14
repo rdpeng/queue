@@ -2,7 +2,7 @@
 % Please edit documentation in R/queue.R
 \name{peek}
 \alias{peek}
-\title{Get the next of the queue}
+\title{Get the next element of the queue}
 \usage{
 peek(x, ...)
 }
@@ -16,4 +16,8 @@ the value of the head of the queue
 }
 \description{
 Return the next element of the queue
+}
+\note{
+For \code{job_queue} objects this returns the next element of the input
+queue
 }

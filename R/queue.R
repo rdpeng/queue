@@ -181,7 +181,7 @@ is_empty.mdb_txn <- function(x, ...) {
 }
 
 
-#' Get the next of the queue
+#' Get the next element of the queue
 #'
 #' Return the next element of the queue
 #'
@@ -189,6 +189,9 @@ is_empty.mdb_txn <- function(x, ...) {
 #' @param ... arguments passed to other methods
 #'
 #' @return the value of the head of the queue
+#'
+#' @note For \code{job_queue} objects this returns the next element of the input
+#' queue
 #'
 #' @export
 #'
