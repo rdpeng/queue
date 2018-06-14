@@ -18,15 +18,11 @@
 create_queue <- function(qfile, mapsize = 2^30, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
                        create = TRUE, mapsize = mapsize, ...)
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 insert(txn, "head", NULL)
                 insert(txn, "tail", NULL)
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
         invisible(structure(list(queue = qdb,
                                  path = qfile),
                             class = "queue"))
@@ -89,8 +85,7 @@ enqueue.queue <- function(x, val, ...) {
                      nextkey = NULL,
                      salt = runif(1))
         key <- hash(node)
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 if(is_empty(txn))
                         insert(txn, "head", key)
                 else {
@@ -103,11 +98,8 @@ enqueue.queue <- function(x, val, ...) {
                 ## Insert new node and point tail to new node
                 insert(txn, key, node)
                 insert(txn, "tail", key)
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
         invisible(NULL)
 }
 
@@ -133,21 +125,16 @@ dequeue <- function(x, ...) {
 #' @export
 dequeue.queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 if(is_empty(txn))
                         stop("queue is empty")
                 h <- fetch(txn, "head")
                 node <- fetch(txn, h)
                 insert(txn, "head", node$nextkey)
                 delete(txn, h)
-                val <- node$value
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
-        val
+                node$value
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
 }
 
 
@@ -202,18 +189,17 @@ peek <- function(x, ...) {
 #' @export
 peek.queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = FALSE)
-        tryCatch({
+        txn.f <- function(txn) {
                 key <- fetch(txn, "head")
                 node <- fetch(txn, key)
-                val <- node$value
-                txn$commit()
+                node$value
+        }
+        tryCatch({
+                qdb$with_transaction(txn.f, write = FALSE)
         }, error = function(e) {
-                txn$abort()
-                message("problem getting top value")
-                stop(e)
+                stop("problem retrieving head value; queue is likely empty",
+                     call. = FALSE)
         })
-        val
 }
 
 #' Delete a Queue

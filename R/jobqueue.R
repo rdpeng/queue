@@ -26,17 +26,13 @@
 create_job_queue <- function(qfile, mapsize = 2^30, ...) {
         qdb <- mdb_env(qfile, lock = TRUE, subdir = TRUE,
                        create = TRUE, mapsize = mapsize, ...)
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 insert(txn, "in_head", NULL)
                 insert(txn, "in_tail", NULL)
                 insert(txn, "out_head", NULL)
                 insert(txn, "out_tail", NULL)
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
         invisible(structure(list(queue = qdb,
                                  path = qfile),
                             class = "job_queue"))
@@ -118,20 +114,16 @@ shelf_list <- function(x, ...) {
 #' @export
 shelf_list.job_queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = FALSE)
-        tryCatch({
+        txn.f <- function(txn) {
                 keys <- txn$list(starts_with = "shelf_")
 
                 if(length(keys) > 0L)
                         vals <- mfetch(txn, keys)
                 else
                         vals <- list()
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
-        vals
+                vals
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
 }
 
 
@@ -152,16 +144,11 @@ shelf_get <- function(x, key, ...) {
 #' @export
 shelf_get.job_queue <- function(x, key, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = FALSE)
-        tryCatch({
+        txn.f <- function(txn) {
                 node <- fetch(txn, key)
-                val <- node$value
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
-        val
+                node$value
+        }
+        qdb$with_transaction(txn.f, write = TRUE)
 }
 
 
@@ -253,20 +240,16 @@ shelf2output.job_queue <- function(x, key, val, ...) {
 #' @export
 dequeue.job_queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = TRUE)
-        tryCatch({
+        txn.f <- function(txn) {
                 if(is_empty_output(txn))
                         stop("output queue is empty")
                 h <- fetch(txn, "out_head")
                 node <- fetch(txn, h)
                 insert(txn, "out_head", node$nextkey)
                 delete(txn, h)
-                val <- node$value
-                txn$commit()
-        }, error = function(e) {
-                txn$abort()
-                stop(e)
-        })
+                node$value
+        }
+        val <- qdb$with_transaction(txn.f, write = TRUE)
         val
 }
 
@@ -274,18 +257,17 @@ dequeue.job_queue <- function(x, ...) {
 #' @export
 peek.job_queue <- function(x, ...) {
         qdb <- x$queue
-        txn <- qdb$begin(write = FALSE)
-        tryCatch({
+        txn.f <- function(txn) {
                 key <- fetch(txn, "in_head")
                 node <- fetch(txn, key)
-                val <- node$value
-                txn$commit()
+                node$value
+        }
+        tryCatch({
+                qdb$with_transaction(txn.f, write = FALSE)
         }, error = function(e) {
-                txn$abort()
-                message("problem getting top value")
-                stop(e)
+                stop("problem retrieving head value; queue is likely empty",
+                     call. = FALSE)
         })
-        val
 }
 
 #' @export
