@@ -10,3 +10,4 @@ License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 6.0.1
 Remotes: richfitz/thor
+BugReports: https://github.com/rdpeng/queue/issues
