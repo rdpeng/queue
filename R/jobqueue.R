@@ -359,6 +359,7 @@ is_empty_output.mdb_txn <- function(x, ...) {
 #' @param x a job_queue object
 #' @param ... arguments passed to methods
 #'
+#' @return the number of items on the shelf
 #' @export
 #'
 any_shelf <- function(x, ...) {
@@ -368,7 +369,7 @@ any_shelf <- function(x, ...) {
 #' @export
 any_shelf.job_queue <- function(x, ...) {
         keys <- x$queue$list(starts_with = "shelf_")
-        length(keys) > 0L
+        length(keys)
 }
 
 

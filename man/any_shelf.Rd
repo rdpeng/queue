@@ -11,6 +11,9 @@ any_shelf(x, ...)
 
 \item{...}{arguments passed to methods}
 }
+\value{
+the number of items on the shelf
+}
 \description{
 Are there any objects on the shelf?
 }
