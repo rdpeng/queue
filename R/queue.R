@@ -232,6 +232,10 @@ delete_queue.queue <- function(x, ...) {
         x$queue$destroy()
 }
 
+#' @export
+delete_queue.character <- function(x, ...) {
+        unlink(x, recursive = TRUE)
+}
 
 ################################################################################
 ## Helper functions
