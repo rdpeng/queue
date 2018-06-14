@@ -38,5 +38,5 @@ test_that("unique keys", {
 test_that("peek", {
         x <- create_queue("peek_test")
         expect_error(peek(x))
-        unlink("peek_test", recursive = TRUE)
+        delete_queue("peek_test")
 })
