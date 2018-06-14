@@ -81,12 +81,11 @@ test_that("shelf2input", {
         delete_queue(x)
 })
 
-
-
-
-
-
-
+test_that("peek error", {
+        x <- create_job_queue("peek_test")
+        expect_error(peek(x))
+        delete_queue("peek_test")
+})
 
 
 
