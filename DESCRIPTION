@@ -1,6 +1,6 @@
 Package: queue
 Type: Package
-Title: On-disk Queue Data Type
+Title: On-Disk Queue Data Type
 Imports: digest, thor
 Suggests: testthat
 Version: 0.1
@@ -9,5 +9,4 @@ Description: A light-weight on-disk queue abstract data type using a key-value d
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 6.0.1
-Remotes: richfitz/thor
 BugReports: https://github.com/rdpeng/queue/issues
