@@ -8,5 +8,5 @@ Authors@R: person("Roger", "Peng", email = "rdpeng@gmail.com", role = c("aut", "
 Description: A light-weight on-disk queue abstract data type using a key-value database backend provided by the 'thor' package and the LMDB database.
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 BugReports: https://github.com/rdpeng/queue/issues
