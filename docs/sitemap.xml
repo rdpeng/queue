@@ -1,0 +1,25 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/any_shelf.html</loc></url>
+<url><loc>/reference/create_job_queue.html</loc></url>
+<url><loc>/reference/create_queue.html</loc></url>
+<url><loc>/reference/delete_queue.html</loc></url>
+<url><loc>/reference/dequeue.html</loc></url>
+<url><loc>/reference/enqueue.html</loc></url>
+<url><loc>/reference/extract_n.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/init_job_queue.html</loc></url>
+<url><loc>/reference/init_queue.html</loc></url>
+<url><loc>/reference/input2shelf.html</loc></url>
+<url><loc>/reference/is_empty.html</loc></url>
+<url><loc>/reference/is_empty_input.html</loc></url>
+<url><loc>/reference/is_empty_output.html</loc></url>
+<url><loc>/reference/peek.html</loc></url>
+<url><loc>/reference/shelf2input.html</loc></url>
+<url><loc>/reference/shelf2output.html</loc></url>
+<url><loc>/reference/shelf_get.html</loc></url>
+<url><loc>/reference/shelf_list.html</loc></url>
+</urlset>
+
