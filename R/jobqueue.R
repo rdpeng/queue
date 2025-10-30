@@ -298,6 +298,7 @@ is_empty_input.job_queue <- function(x, ...) {
         is.null(val)
 }
 
+#' @export
 is_empty_input.mdb_txn <- function(x, ...) {
         val <- fetch(x, "in_head")
         is.null(val)
@@ -327,6 +328,7 @@ is_empty_output.job_queue <- function(x, ...) {
         is.null(val)
 }
 
+#' @export
 is_empty_output.mdb_txn <- function(x, ...) {
         val <- fetch(x, "out_head")
         is.null(val)

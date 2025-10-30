@@ -162,6 +162,7 @@ is_empty.queue <- function(x, ...) {
         is.null(val)
 }
 
+#' @export
 is_empty.mdb_txn <- function(x, ...) {
         val <- fetch(x, "head")
         is.null(val)
