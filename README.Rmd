@@ -2,7 +2,7 @@
 output: github_document
 ---
 
-[![R-CMD-check](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/rdpeng/queue/graph/badge.svg)](https://app.codecov.io/gh/rdpeng/queue)
         
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(

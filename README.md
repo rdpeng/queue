@@ -1,5 +1,7 @@
 
 [![R-CMD-check](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/rdpeng/queue/graph/badge.svg)](https://app.codecov.io/gh/rdpeng/queue)
 
 # queue
 
@@ -11,7 +13,7 @@ R.
 You can install queue from github with:
 
 ``` r
-# install.packages("remotes")
+# install.packages("remots")
 remotes::install_github("rdpeng/queue")
 ```
 
