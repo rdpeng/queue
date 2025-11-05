@@ -15,7 +15,6 @@ create_queue(qfile, mapsize = 2^30, ...)
 }
 \value{
 an object of class \code{"queue"} (invisibly)
-fet
 }
 \description{
 Create a new queue along with necessary files
