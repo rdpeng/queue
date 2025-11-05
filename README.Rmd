@@ -2,8 +2,8 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
+[![R-CMD-check](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml)
+        
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,

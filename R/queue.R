@@ -11,7 +11,6 @@
 #' under the current working directory
 #'
 #' @return an object of class \code{"queue"} (invisibly)
-#'fet
 #' @importFrom thor mdb_env
 #' @export
 
