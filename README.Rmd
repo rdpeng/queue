@@ -21,7 +21,7 @@ The goal of queue is to provide a simple on-disk queue data structure in R.
 You can install queue from github with:
 
 ```{r gh-installation, eval = FALSE}
-# install.packages("remotes")
+# install.packages("remots")
 remotes::install_github("rdpeng/queue")
 ```
 

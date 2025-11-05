@@ -1,12 +1,12 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-queue
-=====
+[![R-CMD-check](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rdpeng/queue/actions/workflows/R-CMD-check.yaml)
 
-The goal of queue is to provide a simple on-disk queue data structure in R.
+# queue
 
-Installation
-------------
+The goal of queue is to provide a simple on-disk queue data structure in
+R.
+
+## Installation
 
 You can install queue from github with:
 
@@ -15,8 +15,7 @@ You can install queue from github with:
 remotes::install_github("rdpeng/queue")
 ```
 
-Example
--------
+## Example
 
 This is a basic example which shows you how to solve a common problem:
 
