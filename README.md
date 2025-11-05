@@ -13,7 +13,7 @@ R.
 You can install queue from github with:
 
 ``` r
-# install.packages("remots")
+# install.packages("remotes")
 remotes::install_github("rdpeng/queue")
 ```
 
